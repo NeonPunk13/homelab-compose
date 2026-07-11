@@ -1,0 +1,22 @@
+http:
+  routers:
+    proxmox:
+      rule: "Host(`proxmox.ghostlab.space`)"
+      entryPoints: ["websecure"]
+      service: proxmox
+      middlewares:
+        - secure-headers
+        - allowlist
+      tls: {}   # use static certs from certs.yml
+
+  services:
+    proxmox:
+      loadBalancer:
+        servers:
+          - url: "https://10.0.0.60:8006"
+        passHostHeader: true
+        serversTransport: proxmox-transport
+
+  serversTransports:
+    proxmox-transport:
+      insecureSkipVerify: true

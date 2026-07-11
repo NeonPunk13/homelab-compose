@@ -1,0 +1,17 @@
+http:
+  routers:
+    nextcloud:
+      rule: "Host(`nextcloud.ghostlab.space`)"
+      entryPoints: ["websecure"]
+      tls:
+        certResolver: http01
+      service: nextcloud
+      middlewares:
+        - secure-headers
+        - allowlist
+
+  services:
+    nextcloud:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.50.30:30027"

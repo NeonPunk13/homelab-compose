@@ -1,0 +1,19 @@
+http:
+  routers:
+    kasm:
+      rule: "Host(`kasm.ghostlab.space`)"
+      entryPoints: ["websecure"]
+      service: kasm
+      tls: {}
+
+  services:
+    kasm:
+      loadBalancer:
+        servers:
+          - url: "https://10.0.50.49"
+        passHostHeader: true
+        serversTransport: kasm-transport
+
+serversTransports:
+  kasm-transport:
+    insecureSkipVerify: true
