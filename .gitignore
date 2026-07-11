@@ -1,0 +1,8 @@
+# real secrets — never commit
+.env
+*.env
+!.env.example
+secrets/
+*.key
+*.pem
+*_token
