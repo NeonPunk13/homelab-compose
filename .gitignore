@@ -6,3 +6,4 @@ secrets/
 *.key
 *.pem
 *_token
+monitoring/uptime-kuma/data/
