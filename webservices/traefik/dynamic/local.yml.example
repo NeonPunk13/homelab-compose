@@ -1,8 +1,10 @@
+# Copy to local.yml ON THE VM and set your real CIDRs — NOT committed.
+# Without this file the dashboard falls back to auth-only (no IP restriction).
 http:
   middlewares:
     lan-only:
       ipAllowList:
         sourceRange:
-          - "198.51.100.0/24"
-          - "198.51.100.0/24"
-          - "198.51.100.0/24"
+          - "198.51.100.0/24"   # management VLAN
+          - "198.51.101.0/24"   # trusted devices VLAN
+          - "198.51.102.0/24"   # servers VLAN
