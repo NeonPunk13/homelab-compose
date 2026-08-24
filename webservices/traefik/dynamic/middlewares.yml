@@ -1,0 +1,13 @@
+http:
+  middlewares:
+    dashboard-auth:
+      basicAuth:
+        usersFile: /etc/traefik/dynamic/.htpasswd
+    security-headers:
+      headers:
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        forceSTSHeader: true
+        frameDeny: true
+        contentTypeNosniff: true
+        referrerPolicy: "strict-origin-when-cross-origin"

@@ -7,3 +7,7 @@ secrets/
 *.pem
 *_token
 monitoring/uptime-kuma/data/
+webservices/traefik/.env
+webservices/traefik/acme/
+webservices/traefik/logs/
+webservices/traefik/dynamic/.htpasswd
