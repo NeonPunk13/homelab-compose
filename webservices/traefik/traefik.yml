@@ -37,10 +37,9 @@ providers:
 certificatesResolvers:
   cloudflare:
     acme:
-      email: CHANGEME@proton.me
+      email: luke.kotze@proton.me
       storage: /etc/traefik/acme/acme.json
       dnsChallenge:
         provider: cloudflare
-        resolvers:
-          - "1.1.1.1:53"
-          - "9.9.9.9:53"
+        propagation:
+          delayBeforeChecks: 10s

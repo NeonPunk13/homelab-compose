@@ -11,3 +11,5 @@ webservices/traefik/.env
 webservices/traefik/acme/
 webservices/traefik/logs/
 webservices/traefik/dynamic/.htpasswd
+
+webservices/traefik/dynamic/local.yml

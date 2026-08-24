@@ -1,0 +1,8 @@
+http:
+  middlewares:
+    lan-only:
+      ipAllowList:
+        sourceRange:
+          - "198.51.100.0/24"
+          - "198.51.100.0/24"
+          - "198.51.100.0/24"

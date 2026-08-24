@@ -1,5 +1,9 @@
 http:
   middlewares:
+    rate-limit:
+      rateLimit:
+        average: 20
+        burst: 40
     dashboard-auth:
       basicAuth:
         usersFile: /etc/traefik/dynamic/.htpasswd
