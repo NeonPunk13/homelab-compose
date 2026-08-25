@@ -4,6 +4,9 @@ services:
     container_name: uptime-kuma
     restart: unless-stopped
     network_mode: host
+    extra_hosts:
+     - "traefik.ghostlab.space:10.0.50.31"
+     - "home.ghostlab.space:10.0.50.31"
     volumes:
       - ./data:/app/data
     environment:
