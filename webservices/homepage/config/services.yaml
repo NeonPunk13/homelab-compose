@@ -1,0 +1,24 @@
+- Infrastructure:
+    - Proxmox:
+        href: https://10.0.0.60:8006
+        description: Hypervisor
+    - Proxmox Backup Server:
+        href: https://10.0.0.62:8007
+        description: Backups
+    - TrueNAS:
+        href: https://10.0.50.30
+        description: Storage
+    - Uptime Kuma:
+        href: http://10.0.0.62:3001
+        description: Monitoring
+
+- Services:
+    - Gitea:
+        href: http://10.0.50.30:30008
+        description: Git
+    - Nextcloud:
+        href: http://10.0.50.30:30027
+        description: Files
+    - Vikunja:
+        href: http://10.0.50.30:30107
+        description: Tasks

@@ -1,0 +1,27 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:v1.6
+    container_name: homepage
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - traefik-proxy
+    environment:
+      - TZ=Europe/London
+      - HOMEPAGE_ALLOWED_HOSTS=home.${DOMAIN}
+    volumes:
+      - ./config:/app/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.rule=Host(`home.${DOMAIN}`)"
+      - "traefik.http.routers.homepage.entrypoints=websecure"
+      - "traefik.http.routers.homepage.tls.certresolver=cloudflare"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+      # lan-only for now — REMOVE when published via cloudflared (tunnel traffic
+      # arrives with the tunnel's source IP and would be blocked)
+      - "traefik.http.routers.homepage.middlewares=lan-only@file,security-headers@file"
+
+networks:
+  traefik-proxy:
+    external: true
