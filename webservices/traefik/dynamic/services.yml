@@ -1,0 +1,110 @@
+########################################################################
+# Routers + services — file provider (replaced Docker label discovery,
+# 2026-08-31). TLS is NOT declared per-router: the websecure entryPoint
+# carries the wildcard (`ghostlab.space` + `*.ghostlab.space`) as its
+# default, so every router below serves it and a new service needs no
+# certificate config at all. Do not re-add `certResolver` here — a
+# router-level tls block overrides the entryPoint default and would ask
+# ACME for a per-hostname cert.
+#
+# Middlewares: `lan-only` lives in dynamic/local.yml (VM-only, gitignored);
+# the rest in dynamic/middlewares.yml. A router naming a middleware that
+# does not exist FAILS TO REGISTER — it does not silently drop it.
+########################################################################
+http:
+  routers:
+    dashboard:
+      rule: "Host(`traefik.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: api@internal
+      middlewares: [lan-only, rate-limit, dashboard-auth, security-headers]
+    proxmox:
+      rule: "Host(`proxmox.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: proxmox
+      # security-headers-embed, not security-headers: this UI frames its own
+      # console/shell (see middlewares.yml). X-Frame-Options: DENY breaks it.
+      middlewares: [lan-only, security-headers-embed]
+    pbs:
+      rule: "Host(`pbs.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: pbs
+      # security-headers-embed, not security-headers: this UI frames its own
+      # console/shell (see middlewares.yml). X-Frame-Options: DENY breaks it.
+      middlewares: [lan-only, security-headers-embed]
+    truenas:
+      rule: "Host(`truenas.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: truenas
+      # security-headers-embed, not security-headers: this UI frames its own
+      # console/shell (see middlewares.yml). X-Frame-Options: DENY breaks it.
+      middlewares: [lan-only, security-headers-embed]
+    gitea:
+      rule: "Host(`gitea.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: gitea
+      middlewares: [lan-only, security-headers]
+    kuma:
+      rule: "Host(`kuma.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: kuma
+      middlewares: [lan-only, security-headers]
+    nextcloud:
+      rule: "Host(`nextcloud.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: nextcloud
+      middlewares: [lan-only, security-headers]
+    vikunja:
+      rule: "Host(`vikunja.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: vikunja
+      middlewares: [lan-only, security-headers]
+    adguard:
+      rule: "Host(`adguard.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: adguard
+      middlewares: [lan-only, security-headers]
+    homepage:
+      rule: "Host(`home.ghostlab.space`)"
+      entryPoints: [websecure]
+      service: homepage
+      # lan-only must be REMOVED here when Homepage is published via
+      # cloudflared — tunnel traffic arrives with the tunnel's source IP.
+      middlewares: [lan-only, security-headers]
+
+  services:
+    proxmox:
+      loadBalancer:
+        serversTransport: insecure
+        servers: [{ url: "https://10.0.0.60:8006" }]
+    pbs:
+      loadBalancer:
+        serversTransport: insecure
+        servers: [{ url: "https://10.0.0.62:8007" }]
+    truenas:
+      loadBalancer:
+        serversTransport: insecure
+        servers: [{ url: "https://10.0.50.30" }]
+    gitea:
+      loadBalancer:
+        servers: [{ url: "http://10.0.50.30:30008" }]
+    kuma:
+      loadBalancer:
+        servers: [{ url: "http://10.0.0.62:3001" }]
+    nextcloud:
+      loadBalancer:
+        servers: [{ url: "http://10.0.50.30:30027" }]
+    vikunja:
+      loadBalancer:
+        servers: [{ url: "http://10.0.50.30:30107" }]
+    adguard:
+      # UI on :80 (confirmed via ss on CT 153, 2026-08-31). :53 is DNS.
+      loadBalancer:
+        servers: [{ url: "http://10.0.50.53:80" }]
+    homepage:
+      loadBalancer:
+        servers: [{ url: "http://homepage:3000" }]
+
+  serversTransports:
+    insecure:
+      insecureSkipVerify: true

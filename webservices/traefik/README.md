@@ -2,8 +2,18 @@
 
 Fresh rebuild 2026-08-24 (pre-INC-002 salvage used as reference only).
 
+Docker provider removed 2026-08-31 — **file provider only**, no `docker.sock`.
+
 - **DNS-01 ACME via Cloudflare** — wildcard `*.ghostlab.space`, no inbound exposure.
-- `exposedByDefault: false` — services opt in explicitly via labels.
+- **The wildcard is declared once, on the `websecure` entryPoint** (`traefik.yml`).
+  Routers in `dynamic/services.yml` carry **no `tls:` block** — a router-level block
+  overrides the entryPoint default and reverts that host to a per-hostname cert.
+- **Routing is explicit, not discovered.** Add a service by adding a router + service
+  to `dynamic/services.yml`. Labels on other containers do nothing; a container can no
+  longer publish itself (the INC-006 mechanism is gone, not disabled).
+- A router referencing a **missing middleware fails to register** — it does not skip it.
+  `lan-only` is VM-only (`dynamic/local.yml`), so forgetting that file on redeploy takes
+  down every route, not just the dashboard.
 - Dashboard chain: `lan-only` → `rate-limit` → `dashboard-auth` → `security-headers`.
   IP allowlist runs FIRST, so off-LAN requests 403 before reaching a password prompt.
 
@@ -14,6 +24,10 @@ Fresh rebuild 2026-08-24 (pre-INC-002 salvage used as reference only).
 | `dynamic/local.yml` | real LAN CIDRs — copy from `local.yml.example` |
 | `dynamic/.htpasswd` | `htpasswd -Bc dynamic/.htpasswd luke` |
 | `acme/acme.json` | `touch` + `chmod 600`; certs land here |
+
+> **Deploy from THIS directory.** The repo root also has `traefik/` — the pre-INC-002
+> salvage (v3.0, DEBUG logging, `docker.sock`, kasm routes). It is one tab-completion
+> away and scp'ing from it will quietly downgrade the VM.
 
 ## Gotchas (all cost time on 2026-08-24)
 - **Traefik must be ≥ 3.6.1** with Docker Engine 29+. Earlier versions hardcode Docker

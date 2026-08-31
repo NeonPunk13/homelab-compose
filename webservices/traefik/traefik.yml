@@ -24,12 +24,14 @@ entryPoints:
           permanent: true
   websecure:
     address: ":443"
+    http:
+      tls:
+        certResolver: cloudflare
+        domains:
+          - main: "ghostlab.space"
+            sans: ["*.ghostlab.space"]
 
 providers:
-  docker:
-    endpoint: "unix:///var/run/docker.sock"
-    exposedByDefault: false
-    network: traefik-proxy
   file:
     directory: /etc/traefik/dynamic
     watch: true

@@ -1,24 +1,66 @@
+# href      → FQDN through Traefik (what you click).
+# siteMonitor → DIRECT IP, deliberately. The dot must answer "is the service up?",
+#   not "is Traefik up?". Pointing both at the FQDN means a Traefik or DNS fault
+#   turns every dot red at once and tells you nothing about which service broke.
+#   Uptime Kuma follows the same rule. Do not "tidy" these into FQDNs.
+# Netdata has no Traefik router (parked item — LAN-open :19999), so it stays on IP.
+
 - Infrastructure:
     - Proxmox:
-        href: https://10.0.0.60:8006
-        description: Hypervisor
+        icon: si-proxmox-#00f0ff
+        href: https://proxmox.ghostlab.space
+        siteMonitor: https://10.0.0.60:8006
+        description: Hypervisor · i7-14700 · 128GB
     - Proxmox Backup Server:
-        href: https://10.0.0.62:8007
-        description: Backups
+        icon: mdi-server-security-#00f0ff
+        href: https://pbs.ghostlab.space
+        siteMonitor: https://10.0.0.62:8007
+        description: Backups · 3-2-1 → B2
     - TrueNAS:
-        href: https://10.0.50.30
-        description: Storage
+        icon: si-truenas-#00f0ff
+        href: https://truenas.ghostlab.space
+        siteMonitor: https://10.0.50.30
+        description: valaskjalf · RAIDZ1
+    - Traefik:
+        icon: si-traefikproxy-#00f0ff
+        href: https://traefik.ghostlab.space
+        description: Reverse proxy · LAN only
+    - AdGuard Home:
+        icon: si-adguard-#00f0ff
+        href: https://adguard.ghostlab.space
+        siteMonitor: http://10.0.50.53
+        description: Split-horizon DNS · CT 153
+
+- Monitoring:
     - Uptime Kuma:
-        href: http://10.0.0.62:3001
-        description: Monitoring
+        icon: si-uptimekuma-#00f0ff
+        href: https://kuma.ghostlab.space
+        siteMonitor: http://10.0.0.62:3001
+        description: Black-box + heartbeats
+    - Netdata · PVE:
+        icon: si-netdata-#00f0ff
+        href: http://10.0.0.60:19999
+        siteMonitor: http://10.0.0.60:19999
+        description: Host metrics
+    - Netdata · PBS:
+        icon: si-netdata-#00f0ff
+        href: http://10.0.0.62:19999
+        siteMonitor: http://10.0.0.62:19999
+        description: Backup host metrics
 
 - Services:
     - Gitea:
-        href: http://10.0.50.30:30008
-        description: Git
+        icon: si-gitea-#00f0ff
+        href: https://gitea.ghostlab.space
+        siteMonitor: http://10.0.50.30:30008
+        description: Git · compose source of truth
     - Nextcloud:
-        href: http://10.0.50.30:30027
+        icon: si-nextcloud-#00f0ff
+        href: https://nextcloud.ghostlab.space
+        siteMonitor: http://10.0.50.30:30027
         description: Files
     - Vikunja:
-        href: http://10.0.50.30:30107
+        icon: mdi-checkbox-marked-circle-outline-#00f0ff
+        href: https://vikunja.ghostlab.space
+        siteMonitor: http://10.0.50.30:30107
         description: Tasks

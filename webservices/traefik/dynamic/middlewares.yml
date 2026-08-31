@@ -7,6 +7,7 @@ http:
     dashboard-auth:
       basicAuth:
         usersFile: /etc/traefik/dynamic/.htpasswd
+    # STRICT — default for everything that has no reason to be framed.
     security-headers:
       headers:
         stsSeconds: 31536000
@@ -15,3 +16,22 @@ http:
         frameDeny: true
         contentTypeNosniff: true
         referrerPolicy: "strict-origin-when-cross-origin"
+
+    # Management UIs that embed their OWN console in a same-origin iframe
+    # (Proxmox noVNC, PBS + TrueNAS shells). Identical to security-headers
+    # except frameDeny is absent and replaced by CSP frame-ancestors 'self'.
+    #
+    # Why the header must be REMOVED, not softened: X-Frame-Options has no
+    # "same-origin-only" value that browsers agree on, and where both headers
+    # are present browsers honour X-Frame-Options over CSP. Leaving
+    # `frameDeny: true` alongside a CSP would silently keep the console broken.
+    # frame-ancestors 'self' restores the identical protection against
+    # cross-origin framing (clickjacking); only self-framing is permitted.
+    security-headers-embed:
+      headers:
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        forceSTSHeader: true
+        contentTypeNosniff: true
+        referrerPolicy: "strict-origin-when-cross-origin"
+        contentSecurityPolicy: "frame-ancestors 'self'"

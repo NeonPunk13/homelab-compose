@@ -14,20 +14,10 @@ services:
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
       - TZ=Europe/London
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
       - ./dynamic:/etc/traefik/dynamic:ro
       - ./acme:/etc/traefik/acme
       - ./logs:/var/log/traefik
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
-      - "traefik.http.routers.dashboard.entrypoints=websecure"
-      - "traefik.http.routers.dashboard.service=api@internal"
-      - "traefik.http.routers.dashboard.tls.certresolver=cloudflare"
-      - "traefik.http.routers.dashboard.tls.domains[0].main=${DOMAIN}"
-      - "traefik.http.routers.dashboard.tls.domains[0].sans=*.${DOMAIN}"
-      - "traefik.http.routers.dashboard.middlewares=lan-only@file,rate-limit@file,dashboard-auth@file,security-headers@file"
 
 networks:
   traefik-proxy:
